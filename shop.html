@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="./data.js"></script>
+    <title>shop</title>
+</head>
+<body class="flex flex-col items-center bg-indigo-300"
+      x-data="window.shopData"
+      x-init="$watch('cart', () => window.saveShopData()); $watch('products', () => window.saveShopData());">
+
+    <div class="flex flex-col items-center w-full bg-neutral-50">
+        <div class="flex items-center h-[100px] w-[80%] px-[100px]">
+            <p class="ml-[auto]">Итоговая цена: <span x-text="cart.totalPrice + ' рублей'"></span></p>
+            <a href="#" class="flex size-[48px] ml-[40px] relative">
+                <img src="./icons/icons8-cart-48.png" alt="cart icon">
+                <div class="bg-black opacity-90 size-[24px] rounded-full flex items-center justify-center absolute -right-2 -bottom-2 pointer-events-none">
+                    <span x-text="cart.itemsCount" class="md:text-[12px] text-white truncate px-1 w-full text-center"></span>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <div class="flex flex-col items-center w-[100%]">
+        <div class="products mt-[40px] flex flex-wrap gap-[100px] w-[80%]">
+            <template x-for="product in products" :key="product.name">
+                <div class="flex flex-col border-2 border-solid outline-black w-[200px] items-center h-fit">
+                    <img class="w-100 h-[230px]" x-bind:src="product.picSrc" x-bind:alt="product.name">
+                    <div class="flex-col w-[100%] py-[10px] px-[20px] bg-white outline-black border-solid border-t-[2px] gap-[5px]">
+                        <p class="text-xl font-bold" x-text="product.name"></p>
+                        <p class="text-base" x-text="product.desc"></p>
+                        <p class="text-ml" x-text="product.price + ' руб'"></p>
+                        <button 
+                            @click="
+                                product.isInCart = !product.isInCart;
+                                if (product.isInCart) {
+                                    cart.itemsCount++;
+                                    cart.totalPrice += product.price;
+                                } else {
+                                    cart.itemsCount--;
+                                    cart.totalPrice -= product.price;
+                                }
+                            " 
+                            class="flex justify-center items-center border-none w-[100%] h-[30px] px-[10%] text-xs font-medium cursor-pointer"
+                            :class="product.isInCart ? 'bg-slate-700 text-white' : 'bg-slate-400 text-black'"
+                            x-text="product.isInCart ? 'В корзине' : 'Добавить в корзину'">
+                        </button>
+                    </div>
+                </div>
+            </template>         
+        </div>
+    </div>
+</body>
+</html>
